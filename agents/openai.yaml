@@ -1,0 +1,8 @@
+interface:
+  display_name: "Stage Review Loop"
+  short_description: "Lightweight review and fix loops"
+  brand_color: "#2563EB"
+  default_prompt: "Use $stage-review-loop to check the current work, fix real issues, and stop if a decision needs my confirmation."
+
+policy:
+  allow_implicit_invocation: true
