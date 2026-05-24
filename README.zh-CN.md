@@ -1,5 +1,7 @@
 # Codex Stage Review Loop
 
+[English](README.md) | 简体中文
+
 这是一个轻量级 Codex Skill，用于在完成一个任务片段、小项目改动或 Skill 编辑后，快速做自检、审查和必要修复。
 
 它的目标不是承诺“完美”，而是让 Codex 在当前范围内确认：需求是否落实、验证是否通过、有没有明显 Bug、有没有需要用户确认的关键决策。

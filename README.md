@@ -1,5 +1,7 @@
 # Codex Stage Review Loop
 
+English | [简体中文](README.zh-CN.md)
+
 A lightweight Codex skill for checking work after a task, project slice, or skill edit is finished. It helps Codex verify requirements, fix real issues, run a bounded review loop, and stop for user confirmation when a decision is needed.
 
 This is useful when you do not want a heavyweight final PR review, but still want a repeatable checkpoint after each meaningful piece of work.
