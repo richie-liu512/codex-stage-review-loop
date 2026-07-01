@@ -2,9 +2,11 @@
 
 [Simplified Chinese](README.zh-CN.md)
 
-Codex Stage Review Loop is a Codex Skill that turns "please check this before we move on" into a bounded acceptance-review workflow. It helps Codex compare finished work against the original request, inspect real evidence, run available validation, fix verified blocking issues, and stop when a decision belongs to the user.
+Codex Stage Review Loop is a lightweight Codex Skill for putting a quick gate in front of the next step. It gives Codex a repeatable way to pause, check the work, and avoid moving on just because the task looks finished.
 
-It is not a claim that a model can catch every defect by reflecting on its own work. The value is more practical: make task closeout explicit, evidence-backed, and low overhead.
+The workflow is intentionally simple: return to the user's original request, verify against real outcomes such as diffs, files, tests, logs, or errors, fix small low-risk issues when they are clearly confirmed, and stop for the user when the next move is uncertain or risky.
+
+It is not meant to guess every hidden bug. Its purpose is to give AI-assisted work a clear acceptance floor: no vague "looks done" handoff, just a scoped check with evidence and explicit stopping conditions.
 
 ## Why It Exists
 
