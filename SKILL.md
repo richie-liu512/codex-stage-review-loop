@@ -29,6 +29,10 @@ Before reviewing, define the smallest honest scope:
 
 Do not expand scope just because a possible improvement is visible.
 
+## Goal Preservation
+
+Before accepting a finding or applying a fix, check whether it still serves the user's original goal. If the review starts creating work that is only locally tidy, procedurally satisfying, or outside the requested outcome, stop and report the drift instead of continuing.
+
 ## Evidence Priority
 
 Prefer external or inspectable evidence over model judgment:

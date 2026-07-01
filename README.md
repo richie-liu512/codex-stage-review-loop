@@ -15,6 +15,7 @@ This skill provides a small reusable closeout loop for those moments. It is usef
 ## How It Works
 
 - Locks the review scope to the user's request, touched files, acceptance evidence, and explicit exclusions.
+- Checks that each finding, fix, or suggestion still serves the user's original goal instead of creating process-driven extra work.
 - Prioritizes inspectable evidence such as diffs, files, tests, build output, logs, rendered UI, or smoke checks before model judgment.
 - Runs a fresh-perspective pass to look for missed requirements, secondary bugs, and user-facing gaps.
 - Fixes verified blocking issues when the fix is inside scope and low risk.
