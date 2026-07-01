@@ -1,6 +1,6 @@
 # Codex Stage Review Loop
 
-[Simplified Chinese](README.zh-CN.md)
+[简体中文](README.zh-CN.md)
 
 Codex Stage Review Loop is a lightweight Codex Skill for putting a quick gate in front of the next step. It gives Codex a repeatable way to pause, check the work, and avoid moving on just because the task looks finished.
 
