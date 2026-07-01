@@ -1,54 +1,61 @@
 # Codex Stage Review Loop
 
-English | [简体中文](README.zh-CN.md)
+[Simplified Chinese](README.zh-CN.md)
 
-A lightweight Codex skill for checking work after a task, project slice, or skill edit is finished. It helps Codex verify requirements, fix real issues, run a bounded review loop, and stop for user confirmation when a decision is needed.
+Codex Stage Review Loop is a Codex Skill that turns "please check this before we move on" into a bounded acceptance-review workflow. It helps Codex compare finished work against the original request, inspect real evidence, run available validation, fix verified blocking issues, and stop when a decision belongs to the user.
 
-This is useful when you do not want a heavyweight final PR review, but still want a repeatable checkpoint after each meaningful piece of work.
+It is not a claim that a model can catch every defect by reflecting on its own work. The value is more practical: make task closeout explicit, evidence-backed, and low overhead.
 
-## What It Does
+## Why It Exists
 
-- Runs a compact self-acceptance pass against the user's request.
-- Performs a fresh-perspective review to catch missed logic gaps.
-- Supports an optional independent reviewer mode for stronger blind-style review.
-- Fixes verified blocking issues inside the current scope.
-- Keeps optional refactors and cosmetic ideas as suggestions instead of silently expanding the task.
-- Stops when the fix requires a user decision, risky state changes, or a broader product choice.
+AI coding agents can complete the main task but still miss the last mile: a skipped check, an unverified assumption, an optional refactor treated as required, or a final answer that sounds more certain than the evidence supports.
+
+This skill provides a small reusable closeout loop for those moments. It is useful after code changes, documentation edits, generated artifacts, local configuration work, or changes to another Codex Skill.
+
+## How It Works
+
+- Locks the review scope to the user's request, touched files, acceptance evidence, and explicit exclusions.
+- Prioritizes inspectable evidence such as diffs, files, tests, build output, logs, rendered UI, or smoke checks before model judgment.
+- Runs a fresh-perspective pass to look for missed requirements, secondary bugs, and user-facing gaps.
+- Fixes verified blocking issues when the fix is inside scope and low risk.
+- Reports optional improvements as suggestions instead of silently expanding the task.
+- Stops for user confirmation when the next step is ambiguous, risky, or a product decision.
 
 ## Modes
 
 ### Lite mode
 
-Default mode for frequent checkpoints. It runs up to two review loops in the current session.
+The default mode for frequent checkpoints. It runs a compact acceptance pass and a fresh-perspective review in the current session, with a small bounded fix loop.
 
-Use this for:
-
-- checking a small project slice
-- reviewing a newly edited skill
-- catching obvious bugs before moving on
-- avoiding large review overhead during active development
-
-Example:
+Use it for everyday checkpoints:
 
 ```text
-Use $stage-review-loop to lightly check the current changes and fix real issues.
+Use $stage-review-loop to lightly verify the current work and fix real blocking issues.
 ```
 
 ### Independent reviewer mode
 
-Stronger mode for blind-style review. It prefers a separate reviewer or fresh review surface when available, and falls back to a constrained fresh-perspective pass when not.
+A stronger mode for final confidence or higher-risk work. It prefers a separate reviewer, fresh thread, fresh model surface, or other genuinely independent review surface when available.
 
-Use this for:
-
-- final confidence before publishing
-- reviewing a larger or riskier change
-- checking whether the result matches the original request without relying on prior assumptions
-
-Example:
+If no independent surface is available, the skill should report that it only ran a constrained fresh pass inside the current context.
 
 ```text
-Use $stage-review-loop in independent reviewer mode to blind-review this skill.
+Use $stage-review-loop in independent reviewer mode to check whether this matches the original request.
 ```
+
+## Relationship To Codex Review
+
+This skill is not a replacement for Codex's built-in code review or PR review. Use built-in review for focused code-diff findings.
+
+Use this skill when the question is broader than a diff: "Did this task actually meet the request, did we verify it, and are any blocking issues still open?"
+
+They can also be combined: run a code review for diff-level defects, then run this skill as a task-level acceptance pass.
+
+## Limitations
+
+This skill can reduce missed acceptance checks, scope drift, and evidence-free completion claims. It cannot reliably catch problems that require unavailable external facts, missing domain knowledge, absent tests, unclear requirements, or a truly independent reviewer.
+
+The workflow is deliberately lightweight. It should not become a large release process unless the user explicitly asks for a stronger final review.
 
 ## Install
 
@@ -64,17 +71,8 @@ stage-review-loop/
 Then invoke it by name:
 
 ```text
-Use $stage-review-loop to check the current work.
+Use $stage-review-loop to verify the current work.
 ```
-
-## Design Notes
-
-The skill intentionally avoids promising "perfect" results. Instead, it uses bounded loops and evidence-backed findings:
-
-- blocking findings are fixed when they are verified and inside scope
-- non-blocking suggestions are reported without broad rewrites
-- loop limits prevent endless cosmetic churn
-- user confirmation is required for risky or ambiguous decisions
 
 ## Project Files
 

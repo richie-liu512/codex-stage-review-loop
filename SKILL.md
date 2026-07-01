@@ -1,20 +1,20 @@
 ---
 name: stage-review-loop
-description: Use after Codex finishes a task, project slice, or skill edit and the user wants a lightweight self-check, blind-style review, bounded fix loop, or optional independent reviewer pass before continuing. Triggers on requests such as review this work, run a self-check loop, blind review, independent reviewer, recursive fix, make sure it matches my requirements, or check the skill/project after implementation.
+description: Use when the user explicitly asks Codex to review or verify completed work before moving on, including light review, self-check, acceptance review, blind review, independent review, or checking whether an implementation, project slice, or skill edit matches the original request. Also use for Chinese-language requests that ask for review, self-check, acceptance verification, or independent review. Do not use when the user is only discussing review workflows or asking how the skill should behave.
 ---
 
 # Stage Review Loop
 
-Use this skill to verify a completed slice of work and fix real issues without turning the review into a large release process.
+Use this skill to run a bounded acceptance review after a completed slice of work. It is a workflow guardrail, not a promise that the model can discover every possible defect by reflection alone.
 
-The goal is not "perfect forever." The goal is: requirements met, known checks pass, no obvious regressions, and no unresolved blocking findings in the current scope.
+The goal is: requirements met, relevant evidence checked, no obvious regressions, and no unresolved blocking findings in the current scope.
 
 ## Modes
 
 Choose the mode from the user's wording.
 
-- **Lite mode**: default. Use this for frequent checkpoints during a project or skill build. It runs a compact self-check plus one fresh-perspective review pass in the current session.
-- **Independent reviewer mode**: use when the user asks for independent review, blind review, fresh reviewer, stronger review, new context, or final confidence. Prefer a separate reviewer or fresh review surface when available. Create a fresh worktree only for high-risk code review, final closeout, or when the user explicitly accepts the extra cost. If no separate reviewer is available, simulate the independent pass by deliberately reviewing only the written requirements, touched files, diffs, and validation output.
+- **Lite mode**: default. Use this for frequent checkpoints during a project or skill build. It runs one compact acceptance pass plus one fresh-perspective review pass in the current session.
+- **Independent reviewer mode**: use when the user asks for independent review, blind review, fresh reviewer, stronger review, new context, or final confidence. Prefer a separate reviewer, fresh thread, fresh model surface, or other genuinely independent review surface when available. Create a fresh worktree only for high-risk code review, final closeout, or when the user explicitly accepts the extra cost. If no independent surface is available, call the result a constrained fresh pass, not a fully independent review.
 
 If the user does not specify a mode, use lite mode. Do not ask unless the choice materially changes risk or runtime.
 
@@ -24,10 +24,21 @@ Before reviewing, define the smallest honest scope:
 
 1. Restate the user request in one short sentence.
 2. Identify touched files or artifacts.
-3. Identify acceptance evidence: tests, build commands, lint/type checks, manual smoke checks, rendered output, or direct file inspection.
+3. Identify acceptance evidence: tests, build commands, lint/type checks, manual smoke checks, rendered output, logs, traces, or direct file inspection.
 4. Exclude unrelated files, style preferences, and speculative future features.
 
 Do not expand scope just because a possible improvement is visible.
+
+## Evidence Priority
+
+Prefer external or inspectable evidence over model judgment:
+
+1. User request and explicit acceptance criteria.
+2. Actual diffs, files, generated artifacts, or rendered output.
+3. Tests, build commands, lint/type checks, logs, traces, or smoke checks.
+4. Model reasoning about remaining risks.
+
+If reliable external evidence is unavailable, say that clearly and review from the best available evidence instead of treating reflection as verification.
 
 ## Review Loop
 
@@ -67,7 +78,7 @@ Check the work against the user's actual request:
 
 - Confirm each requested change is present.
 - Inspect the relevant diff or files directly.
-- Run the cheapest reliable validation commands available for the project.
+- Run the cheapest reliable validation commands available for the project before relying on judgment.
 - If a command cannot be run, say why and use the next best evidence.
 - Look specifically for secondary bugs introduced by the change.
 - When reviewing a Codex skill, also check frontmatter triggers, mode-selection rules, loop limits, user-interruption rules, output format, and `agents/openai.yaml` if present.
@@ -94,6 +105,8 @@ If using independent reviewer mode and a separate reviewer is available, give it
 
 Do not give it your prior conclusions, suspected fixes, or desired answer unless that is required for the review task.
 
+If no separate reviewer or fresh surface is available, explicitly report that the pass was simulated inside the current context.
+
 ### 3. Fix and repeat
 
 For each verified blocking finding:
@@ -116,6 +129,10 @@ Stop and ask the user before continuing if any of these are true:
 - the reviewer finds a serious issue but the fix would be large or uncertain
 
 Ask one concise question in plain language. Include the concrete choice and why it matters.
+
+## Limitations
+
+Do not present this skill as a complete verifier. It can reduce missed acceptance checks, scope drift, and evidence-free completion claims, but it cannot reliably catch defects that require missing domain knowledge, unavailable external facts, absent tests, unclear requirements, or a truly independent reviewer.
 
 ## Anti-shortcut Rules
 
